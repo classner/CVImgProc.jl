@@ -242,7 +242,7 @@ for name in [
 
     :COLOR_COLORCVT_MAX,
     ]
-    ex = Expr(:macrocall, symbol("@icxx_str"), string("cv::", name, ";"))
+    ex = Expr(:macrocall, Symbol("@icxx_str"), string("cv::", name, ";"))
     @eval begin
         global const $name = $ex
         @assert isa($name, ColorConversionCodes)
@@ -261,7 +261,7 @@ for name in [
     :THRESH_OTSU,
     :THRESH_TRIANGLE,
     ]
-    ex = Expr(:macrocall, symbol("@icxx_str"), string("cv::", name, ";"))
+    ex = Expr(:macrocall, Symbol("@icxx_str"), string("cv::", name, ";"))
     @eval begin
         global const $name = $ex
         @assert isa($name, ThresholdTypes)

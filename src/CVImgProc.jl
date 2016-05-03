@@ -20,8 +20,8 @@ cxx"""
 #include <opencv2/imgproc.hpp>
 """
 
-typealias ColorConversionCodes Cxx.CppEnum{symbol("cv::ColorConversionCodes"),UInt32}
-typealias ThresholdTypes Cxx.CppEnum{symbol("cv::ThresholdTypes"),UInt32}
+typealias ColorConversionCodes Cxx.CppEnum{Symbol("cv::ColorConversionCodes"),UInt32}
+typealias ThresholdTypes Cxx.CppEnum{Symbol("cv::ThresholdTypes"),UInt32}
 
 include("const.jl")
 
