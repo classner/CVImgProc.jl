@@ -1,6 +1,7 @@
 module CVImgProc
 
-export ColorConversionCodes, ThresholdTypes, cvtColor, resize, threshold
+export ColorConversionCodes, ThresholdTypes, cvtColor, resize, threshold,
+    flip!, flip
 
 using LibOpenCV
 using CVCore
@@ -54,5 +55,12 @@ function threshold(src::AbstractCvMat, thresh, maxval, typ::Integer)
 end
 threshold(src::AbstractCvMat, thresh, maxval, typ::ThresholdTypes) =
     threshold(src, thresh, maxval, typ.val)
+
+function flip!(src::AbstractCvMat, dst::AbstractCvMat, flip_mode)
+    icxx"cv::flip($(src.handle), $(dst.handle), $flip_mode);"
+    return src
+end
+flip!(src::AbstractCvMat, flip_mode) = flip!(src, src, flip_mode)
+flip(src::AbstractCvMat, flip_mode) = flip(src, similar_empty(src), flip_mode)
 
 end # module
