@@ -1,7 +1,7 @@
 module CVImgProc
 
 export ColorConversionCodes, ThresholdTypes, cvtColor, resize, threshold,
-    flip!, flip
+    flip!, flip, undistort!, undistort
 
 using LibOpenCV
 using CVCore
@@ -61,6 +61,30 @@ function flip!(src::AbstractCvMat, dst::AbstractCvMat, flip_mode)
     return src
 end
 flip!(src::AbstractCvMat, flip_mode) = flip!(src, src, flip_mode)
-flip(src::AbstractCvMat, flip_mode) = flip!(src, similar_empty(src), flip_mode)
+function flip(src::AbstractCvMat, flip_mode)
+    dst = similar_empty(src)
+    flip!(src, dst, flip_mode)
+    dst
+end
+
+# TODO
+noArray() = icxx"cv::noArray();"
+
+function undistort!{T<:AbstractCvMat}(src::T, dst::T,
+        cameraMatrix::AbstractCvMat, distCoeffs::AbstractCvMat,
+        newCameraMatrix=noArray())
+    icxx"cv::undistort($(src.handle), $(dst.handle), $(cameraMatrix.handle),
+        $(distCoeffs.handle), $newCameraMatrix);"
+end
+function undistort!(src::AbstractCvMat, cameraMatrix::AbstractCvMat,
+        distCoeffs::AbstractCvMat, newCameraMatrix=noArray())
+    undistort!(src, src, cameraMatrix, distCoeffs, newCameraMatrix)
+end
+function undistort(src::AbstractCvMat, cameraMatrix::AbstractCvMat,
+        distCoeffs::AbstractCvMat, newCameraMatrix=noArray())
+    dst = similar_empty(src)
+    undistort!(src, dst, cameraMatrix, distCoeffs, newCameraMatrix)
+    dst
+end
 
 end # module
