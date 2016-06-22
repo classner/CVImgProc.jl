@@ -61,6 +61,6 @@ function flip!(src::AbstractCvMat, dst::AbstractCvMat, flip_mode)
     return src
 end
 flip!(src::AbstractCvMat, flip_mode) = flip!(src, src, flip_mode)
-flip(src::AbstractCvMat, flip_mode) = flip(src, similar_empty(src), flip_mode)
+flip(src::AbstractCvMat, flip_mode) = flip!(src, similar_empty(src), flip_mode)
 
 end # module
