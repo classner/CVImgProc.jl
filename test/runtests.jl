@@ -1,4 +1,4 @@
-using CVImgCore
+using CVCore
 using CVImgProc
 using Base.Test
 

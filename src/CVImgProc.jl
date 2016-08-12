@@ -26,9 +26,22 @@ typealias ThresholdTypes Cxx.CppEnum{Symbol("cv::ThresholdTypes"),UInt32}
 
 include("const.jl")
 
+@gencxxf(initUndistortRectifyMap!(cameraMatrix::AbstractCvMat,
+    distCoeffs::AbstractCvMat, R::AbstractCvMat,
+    newCameraMatrix::AbstractCvMat, size::cvSize,
+    m1type, map1::AbstractCvMat, map2::AbstractCvMat),
+    "cv::initUndistortRectifyMap")
+
+@gencxxf(remap!(src::AbstractCvMat, dst::AbstractCvMat,
+   map1::AbstractCvMat, map2::AbstractCvMat,
+   interpolation::Real, borderMode, borderValue = Scalar()),
+   "cv::remap")
+
+@gencxxf(cvtColor!(src::AbstractCvMat, dst::AbstractCvMat,
+    code::Integer), "cv::cvtColor")
 function cvtColor(src::AbstractCvMat, code::Integer)
     dst = similar_empty(src)
-    icxx"cv::cvtColor($(src.handle), $(dst.handle), $code);"
+    cvtColor!(src, dst, code)
     # Since cvtColor may changes its type (e.g.
     # Mat{Float64,3} -> Mat{Float64,2} when code=COLOR_RGB2GRAY)
     # retype from its value
@@ -36,30 +49,31 @@ function cvtColor(src::AbstractCvMat, code::Integer)
 end
 cvtColor(src::AbstractCvMat, code::ColorConversionCodes) = cvtColor(src, code.val)
 
+@gencxxf(resize!(src::AbstractCvMat, dst::AbstractCvMat,
+    s::cvSize), "cv::resize")
 function resize(src::AbstractCvMat, shape::NTuple{2})
     w, h = shape
     s = cvSize(w, h)
     return resize(src, s)
 end
-
 function resize(src::AbstractCvMat, s::cvSize)
     dst = similar_empty(src)
-    icxx"cv::resize($(src.handle), $(dst.handle), $s);"
+    resize!(src, dst, s)
     return dst
 end
 
+@gencxxf(threshold!(src::AbstractCvMat, dst::AbstractCvMat,
+    thresh, maxval, typ::Integer), "cv::threshold")
 function threshold(src::AbstractCvMat, thresh, maxval, typ::Integer)
     dst = similar_empty(src)
-    icxx"cv::threshold($(src.handle), $(dst.handle), $thresh, $maxval, $typ);"
+    threshold!(src, dst, thresh, maxval, typ)
     return dst
 end
 threshold(src::AbstractCvMat, thresh, maxval, typ::ThresholdTypes) =
     threshold(src, thresh, maxval, typ.val)
 
-function flip!(src::AbstractCvMat, dst::AbstractCvMat, flip_mode)
-    icxx"cv::flip($(src.handle), $(dst.handle), $flip_mode);"
-    return src
-end
+@gencxxf(flip!(src::AbstractCvMat, dst::AbstractCvMat, flip_mode),
+    "cv::flip")
 flip!(src::AbstractCvMat, flip_mode) = flip!(src, src, flip_mode)
 function flip(src::AbstractCvMat, flip_mode)
     dst = similar_empty(src)
@@ -70,12 +84,9 @@ end
 # TODO
 noArray() = icxx"cv::noArray();"
 
-function undistort!{T<:AbstractCvMat}(src::T, dst::T,
+@gencxxf(undistort!(src::AbstractCvMat, dst::AbstractCvMat,
         cameraMatrix::AbstractCvMat, distCoeffs::AbstractCvMat,
-        newCameraMatrix=noArray())
-    icxx"cv::undistort($(src.handle), $(dst.handle), $(cameraMatrix.handle),
-        $(distCoeffs.handle), $newCameraMatrix);"
-end
+        newCameraMatrix=noArray()), "cv::undistort")
 function undistort!(src::AbstractCvMat, cameraMatrix::AbstractCvMat,
         distCoeffs::AbstractCvMat, newCameraMatrix=noArray())
     undistort!(src, src, cameraMatrix, distCoeffs, newCameraMatrix)
