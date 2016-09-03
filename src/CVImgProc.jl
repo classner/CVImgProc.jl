@@ -1,7 +1,8 @@
 module CVImgProc
 
 export ColorConversionCodes, ThresholdTypes, cvtColor, resize, threshold,
-    flip!, flip, undistort!, undistort
+    flip!, flip, undistort!, undistort, GaussianBlur!, GaussianBlur,
+    Sobel!, Sobel
 
 using LibOpenCV
 using CVCore
@@ -23,6 +24,7 @@ cxx"""
 
 typealias ColorConversionCodes Cxx.CppEnum{Symbol("cv::ColorConversionCodes"),UInt32}
 typealias ThresholdTypes Cxx.CppEnum{Symbol("cv::ThresholdTypes"),UInt32}
+typealias BorderTypes Cxx.CppEnum{Symbol("cv::BorderTypes"),UInt32}
 
 include("const.jl")
 
@@ -95,6 +97,26 @@ function undistort(src::AbstractCvMat, cameraMatrix::AbstractCvMat,
         distCoeffs::AbstractCvMat, newCameraMatrix=noArray())
     dst = similar_empty(src)
     undistort!(src, dst, cameraMatrix, distCoeffs, newCameraMatrix)
+    dst
+end
+
+@gencxxf(GaussianBlur!(src::AbstractCvMat, dst::AbstractCvMat,
+    ksize::CVCore.cvSize, sigmaX, sigmaY=0, borderType=CVCore.BORDER_DEFAULT),
+    "cv::GaussianBlur")
+function GaussianBlur(src::AbstractCvMat, ksize::CVCore.cvSize, sigmaX,
+    sigmaY=0, borderType=CVCore.BORDER_DEFAULT)
+    dst = similar_empty(src)
+    GaussianBlur!(src, dst, ksize, sigmaX, sigmaY, borderType)
+    dst
+end
+
+@gencxxf(Sobel!(src::AbstractCvMat, dst::AbstractCvMat, ddepth, dx, dy,
+    ksize=3, scale=1, delta=0, borderType=CVCore.BORDER_DEFAULT),
+    "cv::Sobel")
+function Sobel(src::AbstractCvMat, ddepth, dx, dy, ksize=3, scale=1, delta=0,
+    borderType=CVCore.BORDER_DEFAULT)
+    dst = similar_empty(src)
+    Sobel!(src, dst, ddepth, dx, dy, ksize, scale, delta, borderType)
     dst
 end
 
