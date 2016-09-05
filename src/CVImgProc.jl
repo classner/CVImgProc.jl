@@ -54,9 +54,8 @@ cvtColor(src::AbstractCvMat, code::ColorConversionCodes) = cvtColor(src, code.va
 @gencxxf(resize!(src::AbstractCvMat, dst::AbstractCvMat,
     s::cvSize), "cv::resize")
 function resize(src::AbstractCvMat, shape::NTuple{2})
-    w, h = shape
-    s = cvSize(w, h)
-    return resize(src, s)
+    rows, cols = shape
+    return (src, cvSize(cols, rows))
 end
 function resize(src::AbstractCvMat, s::cvSize)
     dst = similar_empty(src)
