@@ -1,13 +1,14 @@
 module CVImgProc
 
-export ColorConversionCodes, ThresholdTypes, cvtColor, resize, threshold,
-    flip!, flip, undistort!, undistort, GaussianBlur!, GaussianBlur,
-    Sobel!, Sobel
+export ColorConversionCodes, ThresholdTypes, cvtColor, resize!, resize,
+    threshold!, threshold, flip!, flip, undistort!, undistort,
+    GaussianBlur!, GaussianBlur, Sobel!, Sobel
 
 using LibOpenCV
 using CVCore
 using Cxx
 
+import Base: resize!
 import CVCore: cvSize, similar_empty
 
 libopencv_imgproc = LibOpenCV.find_library_e("libopencv_imgproc")
