@@ -23,9 +23,9 @@ cxx"""
 #include <opencv2/imgproc.hpp>
 """
 
-typealias ColorConversionCodes Cxx.CppEnum{Symbol("cv::ColorConversionCodes"),UInt32}
-typealias ThresholdTypes Cxx.CppEnum{Symbol("cv::ThresholdTypes"),UInt32}
-typealias BorderTypes Cxx.CppEnum{Symbol("cv::BorderTypes"),UInt32}
+const ColorConversionCodes = Cxx.CppEnum{Symbol("cv::ColorConversionCodes"),UInt32}
+const ThresholdTypes = Cxx.CppEnum{Symbol("cv::ThresholdTypes"),UInt32}
+const BorderTypes = Cxx.CppEnum{Symbol("cv::BorderTypes"),UInt32}
 
 include("const.jl")
 
